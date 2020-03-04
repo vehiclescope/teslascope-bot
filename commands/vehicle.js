@@ -20,12 +20,13 @@ module.exports = {
                     .setURL('https://teslascope.com/vehicle/' + response.response.public_id)
                     .setAuthor('Teslascope', 'https://teslascope.com/img/logoblock.png', 'https://teslascope.com/')
                     .setDescription('A glimpse of the vehicle information for **' + response.response.name + '**.')
-                    .setThumbnail(response.response.render_url)
                     .setImage(response.response.render_url)
-                    .addField('Model', response.response.model + ' ' + response.response.trim + ' (' + response.response.year + ')')
-                    .addField('Odometer', response.response.odometer + ' miles')
-                    .addField('Battery Level', response.response.battery.level + '%', true)
-                    .addField('Battery Range', response.response.battery.range + ' miles', true)
+                    .addField('Model', response.response.model + ' ' + response.response.trim + ' (' + response.response.year + ')', true)
+                    .addBlankField(true)
+                    .addField('Software Update', '[' + response.response.car_version + '](https://teslascope.com/software/' + response.response.car_version + ')', true)
+                    .addField('Odometer', response.response.odometer.toLocaleString() + ' miles', true)
+                    .addBlankField(true)
+                    .addField('Battery Range', response.response.battery.level + '% (' + response.response.battery.range + ' miles)', true)
                     .setTimestamp()
 
                     message.channel.send(exampleEmbed);
