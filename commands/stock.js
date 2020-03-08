@@ -1,36 +1,35 @@
 const getJSON = require('get-json');
 const Discord = require('discord.js');
 
-const { stockapi } = require('./../config.json');
-
 module.exports = {
 	name: 'stock',
     aliases: ['tsla'],
     description: 'Request the current stock price of Tesla ($TSLA).',
-    cooldown: 10,
+    cooldown: 3,
+    usage: '<symbol>',
 	execute(message, args) {
-	    if(!stockapi) {
-	        message.reply('An API key for stock prices has not been included in the config file. Please kindly let a moderator know.');
-        } else {
-	        getJSON('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=TSLA&apikey=' + stockapi)
-                .then(function(response) {
-                    console.log(response);
-                    const info = response['Global Quote'];
-                    const exampleEmbed = new Discord.RichEmbed()
-                    .setColor('#FF6969')
-                    .setTitle('Tesla, Inc. (TSLA)')
-                    .setDescription('A glimpse of stock information for **Tesla, Inc.**.')
-                    .addField('Price', '**$' + parseFloat(info['05. price']).toFixed(2) + '**', true)
-                    .addBlankField(true)
-                    .addField('Open', '$' + parseFloat(info['02. open']).toFixed(2), true)
-                    .addField('High', '$' + parseFloat(info['03. high']).toFixed(2), true)
-                    .addField('Low', '$' + parseFloat(info['04. low']).toFixed(2), true)
-                    .addField('Change', parseFloat(info['10. change percent']).toFixed(2) + ' ($' + parseFloat(info['09. change']).toFixed(2) + ')', true);
 
-                    message.channel.send(exampleEmbed);
-                }).catch(function(error) {
-                    console.log(error);
-            });
-        }
+	    // Let's check if a symbol was provided. If not, default to TSLA.
+        if(args[0]) { stock = args[0]; }
+        else { stock = 'TSLA'; }
+
+        getJSON('https://financialmodelingprep.com/api/v3/quote/' + stock)
+            .then(function(response) {
+                console.log(response[0]);
+                const exampleEmbed = new Discord.RichEmbed()
+                .setColor('#FF6969')
+                .setTitle(response[0].name + ' (' + response[0].symbol + ')')
+                .setDescription('A glimpse of stock information for **' + response[0].name + '**.')
+                .addField('Price', '**$' + parseFloat(response[0].price).toFixed(2) + '**', true)
+                .addBlankField(true)
+                .addField('Open', '$' + parseFloat(response[0].open).toFixed(2), true)
+                .addField('High', '$' + parseFloat(response[0].dayHigh).toFixed(2), true)
+                .addField('Low', '$' + parseFloat(response[0].dayLow).toFixed(2), true)
+                .addField('Change', parseFloat(response[0].changesPercentage).toFixed(2) + '% ($' + parseFloat(response[0].change).toFixed(2) + ')', true);
+
+                message.channel.send(exampleEmbed);
+            }).catch(function(error) {
+                console.log(error);
+        });
 	},
 };
