@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 
 module.exports = {
 	name: 'vehicle',
+    aliases: ['v', 'car'],
     description: 'Request information about a specific vehicle on Teslascope.',
     args: true,
     usage: '<public id>',
