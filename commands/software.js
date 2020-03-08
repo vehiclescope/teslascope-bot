@@ -1,4 +1,5 @@
 const getJSON = require('get-json');
+const Discord = require('discord.js');
 
 function timeDifference(current, previous) {
 
@@ -48,10 +49,20 @@ module.exports = {
                 if(response.code == 404) {
                     message.reply('The version you requested could not be found.');
                 } else {
-                    message.channel.send('There are **'+ response.response.count +' vehicles** ('+ response.response.percentage +'%) on the update, ' + response.response.version + '. \n' +
-                    'This update was first spotted ' + timeDifference(new Date(), new Date(response.response.firstSpotted)) + '. \n \n' +
-                    'Check out the release notes here: https://teslascope.com/teslapedia/software-update/' + response.response.version.replace(' ', '-')
-                    );
+                    const exampleEmbed = new Discord.RichEmbed()
+                    .setColor('#FF6969')
+                    .setTitle(response.response.version)
+                    .setURL('https://teslascope.com/software/' + response.response.version)
+                    .setDescription('A collection of statistics about the Tesla software update, **' + response.response.version + '**.')
+                    .addField('Release Notes', '[View](https://teslascope.com/software/' + response.response.version + ')', true)
+                    .addBlankField(true)
+                    .addField('Commit', response.response.commit, true)
+                    .addField('Vehicles', response.response.count.toLocaleString() + ' (' + response.response.percentage + '%)', true)
+                    .addBlankField(true)
+                    .addField('First Spotted', timeDifference(new Date(), new Date(response.response.firstSpotted)), true)
+                    .setTimestamp();
+
+                    message.channel.send(exampleEmbed);
                 }
             }).catch(function(error) {
                 console.log(error);
