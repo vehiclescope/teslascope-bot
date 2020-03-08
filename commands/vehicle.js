@@ -26,8 +26,7 @@ module.exports = {
                     .addField('Software Update', '[' + response.response.car_version + '](https://teslascope.com/software/' + response.response.car_version + ')', true)
                     .addField('Odometer', response.response.odometer.toLocaleString() + ' miles', true)
                     .addBlankField(true)
-                    .addField('Battery Range', response.response.battery.level + '% (' + response.response.battery.range + ' miles)', true)
-                    .setTimestamp()
+                    .addField('Battery Range', response.response.battery.level + '% (' + response.response.battery.range + ' miles)', true);
 
                     message.channel.send(exampleEmbed);
                 }

@@ -59,8 +59,7 @@ module.exports = {
                     .addField('Commit', response.response.commit, true)
                     .addField('Vehicles', response.response.count.toLocaleString() + ' (' + response.response.percentage + '%)', true)
                     .addBlankField(true)
-                    .addField('First Spotted', timeDifference(new Date(), new Date(response.response.firstSpotted)), true)
-                    .setTimestamp();
+                    .addField('First Spotted', timeDifference(new Date(), new Date(response.response.firstSpotted)), true);
 
                     message.channel.send(exampleEmbed);
                 }
