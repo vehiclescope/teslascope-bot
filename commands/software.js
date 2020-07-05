@@ -49,17 +49,26 @@ module.exports = {
                 if(response.code == 404) {
                     message.reply('The version you requested could not be found.');
                 } else {
+                    response = response.response;
+                    features = '';
+
+                    if(response.features.length !== 0) {
+                        features = '\r\n\r\n' + response.features.join('\r\n');
+                    }
+
                     const exampleEmbed = new Discord.RichEmbed()
                     .setColor('#FF6969')
-                    .setTitle(response.response.version)
-                    .setURL('https://teslascope.com/software/' + response.response.version)
-                    .setDescription('A collection of statistics about the Tesla software update, **' + response.response.version + '**.')
-                    .addField('Release Notes', '[View](https://teslascope.com/software/' + response.response.version + ')', true)
-                    .addBlankField(true)
-                    .addField('Commit', response.response.commit, true)
-                    .addField('Vehicles', response.response.count.toLocaleString() + ' (' + response.response.percentage + '%)', true)
-                    .addBlankField(true)
-                    .addField('First Spotted', timeDifference(new Date(), new Date(response.response.firstSpotted)), true);
+                    .setTitle('Software Update ('+response.version+')')
+                    .setURL('https://teslascope.com/software/' + response.version)
+                    .setDescription(
+                        'A collection of information and metrics regarding the software update, **' + response.version + '**.' +
+                        features
+                        + '\r\n\r\nTo view the complete release notes **[click here](https://teslascope.com/software/' + response.version + ')**.'
+                        + '\r\nTo view this update\'s rollout **[click here](https://teslascope.com/software/history?version=' + response.version + ')**.'
+                    )
+                    .addField('Commit', response.commit, true)
+                    .addField('Vehicles', response.count.toLocaleString() + ' (' + response.percentage + '%)', true)
+                    .addField('First Spotted', timeDifference(new Date(), new Date(response.firstSpotted)), true);
 
                     message.channel.send(exampleEmbed);
                 }
