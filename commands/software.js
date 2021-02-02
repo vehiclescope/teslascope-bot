@@ -38,11 +38,16 @@ function timeDifference(current, previous) {
 
 module.exports = {
     name: 'software',
-    aliases: ['update', 'firmware'],
+    aliases: ['update', 'firmware', 'latest'],
     description: 'Request a specific software update.',
-    args: true,
+    args: false,
     usage: '<version>',
 	execute(message, args) {
+
+        if(args[0] === undefined) {
+            args[0] = 'latest';
+        }
+
         getJSON('https://teslascope.com/api/software/' + args[0])
             .then(function(response) {
                 console.log(response);
@@ -56,7 +61,7 @@ module.exports = {
                         features = '\r\n\r\n' + response.features.join('\r\n');
                     }
 
-                    const exampleEmbed = new Discord.RichEmbed()
+                    const exampleEmbed = new Discord.MessageEmbed()
                     .setColor('#FF6969')
                     .setTitle('Software Update ('+response.version+')')
                     .setURL('https://teslascope.com/software/' + response.version)
@@ -68,7 +73,10 @@ module.exports = {
                     )
                     .addField('Commit', response.commit, true)
                     .addField('Vehicles', response.count.toLocaleString() + ' (' + response.percentage + '%)', true)
-                    .addField('First Spotted', timeDifference(new Date(), new Date(response.firstSpotted)), true);
+                    .addField('First Spotted', timeDifference(new Date(), new Date(response.firstSpotted)), true)
+                    .addField('Downloading', response.pending.downloading, true)
+                    .addField('Waiting For Wifi', response.pending.waiting, true)
+                    .addField('Available / Installing', response.pending.available + ' / ' + response.pending.installing, true);
 
                     message.channel.send(exampleEmbed);
                 }

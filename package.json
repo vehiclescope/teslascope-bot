@@ -6,11 +6,11 @@
     "author": "Teslascope",
     "dependencies": {
         "canvas": "^2.6.1",
-        "discord.js": "*",
+        "discord.js": "^12.5.1",
         "get-date": "^1.0.2",
         "get-json": "^1.0.1",
         "get-time": "^1.0.1",
         "minimist": ">=0.2.1",
-        "winston": "^3.2.1"
+        "winston": "^3.3.3"
     }
 }

@@ -16,7 +16,7 @@ module.exports = {
         getJSON('https://financialmodelingprep.com/api/v3/quote/' + stock)
             .then(function(response) {
                 console.log(response[0]);
-                const exampleEmbed = new Discord.RichEmbed()
+                const exampleEmbed = new Discord.MessageEmbed()
                 .setColor('#FF6969')
                 .setTitle(response[0].name + ' (' + response[0].symbol + ')')
                 .setDescription('A glimpse of stock information for **' + response[0].name + '**.')
