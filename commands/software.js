@@ -48,7 +48,15 @@ module.exports = {
             args[0] = 'latest';
         }
 
-        getJSON('https://teslascope.com/api/software/' + args[0])
+        let apiUrl;
+        let allowedModels = ['models', 'model3', 'modelx', 'modely'];
+        if (allowedModels.includes(args[0])) {
+            apiUrl = 'https://teslascope.com/api/software/latest?model=' + args[0];
+        } else {
+            apiUrl = 'https://teslascope.com/api/software/' + args[0];
+        }
+
+        getJSON(apiUrl)
             .then(function(response) {
                 console.log(response);
                 if(response.code == 404) {
@@ -66,14 +74,14 @@ module.exports = {
                     .setTitle('Software Update ('+response.version+')')
                     .setURL('https://teslascope.com/software/' + response.version)
                     .setDescription(
-                        'A collection of information and metrics regarding the software update, **' + response.version + '**.' +
-                        features
+                        'This software update, **' + response.version + '**, was first spotted ' + timeDifference(new Date(), new Date(response.firstSpotted)) + '.'
+                        + features
                         + '\r\n\r\nTo view the complete release notes **[click here](https://teslascope.com/software/' + response.version + ')**.'
                         + '\r\nTo view this update\'s rollout **[click here](https://teslascope.com/software/history?version=' + response.version + ')**.'
                     )
                     .addField('Commit', response.commit, true)
                     .addField('Vehicles', response.count.toLocaleString() + ' (' + response.percentage + '%)', true)
-                    .addField('First Spotted', timeDifference(new Date(), new Date(response.firstSpotted)), true)
+                    .addField('Models', ' S (' + response.counts.models.toLocaleString() + '), 3 (' + response.counts.model3.toLocaleString() + '), X (' + response.counts.modelx.toLocaleString() + '), Y (' + response.counts.modely.toLocaleString() + ')', true)
                     .addField('Downloading', response.pending.downloading, true)
                     .addField('Waiting For Wifi', response.pending.waiting, true)
                     .addField('Available / Installing', response.pending.available + ' / ' + response.pending.installing, true);
