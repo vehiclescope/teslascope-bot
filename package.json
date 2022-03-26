@@ -10,7 +10,7 @@
         "get-date": "^1.0.2",
         "get-json": "^1.0.1",
         "get-time": "^1.0.1",
-        "minimist": ">=0.2.1",
+        "minimist": ">=1.2.6",
         "winston": "^3.3.3"
     }
 }
