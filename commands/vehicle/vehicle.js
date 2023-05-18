@@ -16,11 +16,6 @@ module.exports = {
                     interaction.reply({ content: 'The vehicle you requested could not be found.'});
                 } else {
                     response = response.response;
-                    features = '';
-
-                    if(response.features.length !== 0) {
-                        features = '\r\n\r\n' + response.features.join('\r\n');
-                    }
 
                     const exampleEmbed = new EmbedBuilder()
                     .setColor('#FF6969')
