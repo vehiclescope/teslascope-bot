@@ -21,7 +21,6 @@ module.exports = {
                     .setColor('#FF6969')
                     .setTitle(response.name)
                     .setURL('https://teslascope.com/vehicle/' + response.public_id)
-                    .setAuthor('Teslascope', 'https://teslascope.com/img/logoblock.png', 'https://teslascope.com/')
                     .setDescription('A glimpse of the vehicle information for **' + response.name + '**.')
                     .setImage(response.render_url)
                     .addFields(
