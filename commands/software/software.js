@@ -1,5 +1,5 @@
 const getJSON = require('get-json');
-const Discord = require('discord.js');
+const { SlashCommandBuilder, Discord, EmbedBuilder } = require('discord.js');
 
 function timeDifference(current, previous) {
 
@@ -37,30 +37,31 @@ function timeDifference(current, previous) {
 }
 
 module.exports = {
-    name: 'software',
-    aliases: ['update', 'firmware', 'latest'],
-    description: 'Request a specific software update.',
-    args: false,
-    usage: '<version>',
-	execute(message, args) {
-
-        if(args[0] === undefined) {
-            args[0] = 'latest';
-        }
+	data: new SlashCommandBuilder()
+		.setName('software')
+		.setDescription('Request a specific software update.')
+        .addStringOption(option => option.setName('software').setDescription('The software version.').setRequired(true), option => option.setName('model').setDescription('Only include if you want results just for that model type.').addChoices(
+            {name: 'Model S', value: 'models'},
+            {name: 'Model 3', value: 'model3'},
+            {name: 'Model X', value: 'modelx'},
+            {name: 'Model Y', value: 'model'},
+        )),
+	async execute(interaction) {
+        const softwareString = interaction.options.getString('software') ?? 'latest';
+        const model = interaction.options.getString('model') ?? null;
 
         let apiUrl;
-        let allowedModels = ['models', 'model3', 'modelx', 'modely'];
-        if (allowedModels.includes(args[0])) {
-            apiUrl = 'https://teslascope.com/api/software/latest?model=' + args[0];
+        if (model) {
+            apiUrl = 'https://teslascope.com/api/software/'+ softwareString +'?model=' + model;
         } else {
-            apiUrl = 'https://teslascope.com/api/software/' + args[0];
+            apiUrl = 'https://teslascope.com/api/software/' + softwareString;
         }
 
         getJSON(apiUrl)
             .then(function(response) {
                 console.log(response);
                 if(response.code == 404) {
-                    message.reply('The version you requested could not be found.');
+                    interaction.reply({ content: 'The version you requested could not be found.'});
                 } else {
                     response = response.response;
                     features = '';
@@ -69,24 +70,25 @@ module.exports = {
                         features = '\r\n\r\n' + response.features.join('\r\n');
                     }
 
-                    const exampleEmbed = new Discord.MessageEmbed()
+                    const exampleEmbed = new EmbedBuilder()
                     .setColor('#FF6969')
                     .setTitle('Software Update ('+response.version+')')
                     .setURL('https://teslascope.com/software/' + response.version)
                     .setDescription(
                         'This software update, **' + response.version + '**, was first spotted ' + timeDifference(new Date(), new Date(response.firstSpotted)) + '.'
                         + features
-                        + '\r\n\r\nTo view the complete release notes **[click here](https://teslascope.com/software/' + response.version + ')**.'
+                        + '\r\n\r\nTo view details **[click here](https://teslascope.com/software/' + response.version + ')**.'
                         + '\r\nTo view this update\'s rollout **[click here](https://teslascope.com/software/history?version=' + response.version + ')**.'
                     )
-                    .addField('Commit', response.commit, true)
-                    .addField('Vehicles', response.count.toLocaleString() + ' (' + response.percentage + '%)', true)
-                    .addField('Models', ' S (' + response.counts.models.toLocaleString() + '), 3 (' + response.counts.model3.toLocaleString() + '), X (' + response.counts.modelx.toLocaleString() + '), Y (' + response.counts.modely.toLocaleString() + ')', true)
-                    .addField('Downloading', response.pending.downloading, true)
-                    .addField('Waiting For Wifi', response.pending.waiting, true)
-                    .addField('Available / Installing', response.pending.available + ' / ' + response.pending.installing, true);
+                    .addFields(
+                        { name: 'Commit', value: response.commit.toString(), inline: true },
+                        { name: 'Vehicles', value: response.count.toLocaleString() + ' (' + response.percentage + '%)', inline: true},
+                        { name: 'Downloading', value: response.pending.downloading.toString(), inline: true },
+                        { name: 'Waiting For Wifi', value: response.pending.waiting.toString(), inline: true},
+                        { name: 'Available / Installing', value: response.pending.available.toString() + ' / ' + response.pending.installing.toString(), inline: true}
+                    );
 
-                    message.channel.send(exampleEmbed);
+                    interaction.reply({embeds: [exampleEmbed]});
                 }
             }).catch(function(error) {
                 console.log(error);

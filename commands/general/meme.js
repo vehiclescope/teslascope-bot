@@ -1,4 +1,4 @@
-const getJSON = require('get-json');
+const { SlashCommandBuilder } = require('discord.js');
 
 const list = [
     "https://twitter.com/elonmusk/status/823727035088416768",
@@ -12,12 +12,11 @@ const list = [
 ];
 
 module.exports = {
-	name: 'meme',
-	aliases: ['elon'],
-	cooldown: 10,
-	description: 'Satisifies @jpar\'s need for memes.',
-	execute(message, args) {
-		const item = list[Math.floor(Math.random() * list.length)];
-        message.channel.send(item);
+	data: new SlashCommandBuilder()
+		.setName('meme')
+		.setDescription('Satisifies the need for memes.'),
+	async execute(interaction) {
+        const item = list[Math.floor(Math.random() * list.length)];
+		await interaction.reply({content: item.toString()});
 	},
 };
