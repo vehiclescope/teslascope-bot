@@ -28,10 +28,10 @@ module.exports = {
                         { name: 'Software Update', value: '[' + response.car_version + '](https://teslascope.com/software/' + response.car_version + ')', inline: true },
                         { name: "** **", value: "** **", inline: true },
                         { name: 'Odometer', value: response.odometer.toLocaleString() + ' miles', inline: true },
-                        { name: 'Battery Range', value: response.response.battery.level + '% (' + response.response.battery.range + ' miles)', inline: true },
+                        { name: 'Battery Range', value: response.battery.level + '% (' + response.battery.range + ' miles)', inline: true },
                         { name: "** **", value: "** **", inline: true },
-                        { name: 'Driving (' + response.response.statistics.drives + ' sessions)', value: response.response.statistics.distance + ' miles driven', inline: true },
-                        { name: 'Charging (' + response.response.statistics.charges + ' sessions)', value: response.response.statistics.charges_kwh + 'kWh generated', inline: true },
+                        { name: 'Driving (' + response.statistics.drives + ' sessions)', value: response.statistics.distance + ' miles driven', inline: true },
+                        { name: 'Charging (' + response.statistics.charges + ' sessions)', value: response.statistics.charges_kwh + 'kWh generated', inline: true },
                         { name: "** **", value: "** **", inline: true }
                     );
 
